@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 import com.BallGame.net.network.ClientResponse;
 
@@ -33,58 +34,58 @@ public class TestClient {
     /**
      * send msgs to client handler
      */
-    // public void sendMsg() {
-    //     try {
-    //         bufferedWriter.write("hi");
-    //         bufferedWriter.newLine();
-    //         bufferedWriter.flush();
+    public void sendMsg() {
+        try {
+            bufferedWriter.write("hi");
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
 
-    //         // keep sending msgs
-    //         Scanner scanner = new Scanner(System.in);
-    //         while (socket.isConnected()) {
-    //             String msgToSend = scanner.nextLine();
-    //             bufferedWriter.write(username + ": " + msgToSend);
-    //             bufferedWriter.newLine();
-    //             bufferedWriter.flush();
-    //         }
-    //     } catch (IOException e) {
-    //         closeEverything(socket, bufferedReader, bufferedWriter);
-    //     }
-    // }
+            // keep sending msgs
+            Scanner scanner = new Scanner(System.in);
+            while (socket.isConnected()) {
+                String msgToSend = scanner.nextLine();
+                bufferedWriter.write(msgToSend);
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+            }
+        } catch (IOException e) {
+            closeEverything(socket, bufferedReader, bufferedWriter);
+        }
+    }
 
     /**
      * listen for msgs from server (broadcast msgs)
      * need a new thread
      */
-    // public void listenForMsgs() {
-    //     new Thread(new Runnable() { // see wittcode's vid on runnable
-    //         @Override
-    //         public void run() {
-    //             String msgFromServer;
-    //             while (socket.isConnected()) {
-    //                 try {
-    //                     msgFromServer = bufferedReader.readLine();
-    //                     System.out.println(msgFromServer);
-    //                 } catch (IOException e) {
-    //                     closeEverything(socket, bufferedReader, bufferedWriter);
-    //                 }
-    //             }
-    //         }
-    //     }).start();
-    // }
-
     public void listenForMsgs() {
-        
-        String msgFromServer;
-        while (socket.isConnected()) {
-            try {
-                msgFromServer = bufferedReader.readLine();
-                System.out.println(msgFromServer);
-            } catch (IOException e) {
-                closeEverything(socket, bufferedReader, bufferedWriter);
+        new Thread(new Runnable() { // see wittcode's vid on runnable
+            @Override
+            public void run() {
+                String msgFromServer;
+                while (socket.isConnected()) {
+                    try {
+                        msgFromServer = bufferedReader.readLine();
+                        System.out.println(msgFromServer);
+                    } catch (IOException e) {
+                        closeEverything(socket, bufferedReader, bufferedWriter);
+                    }
+                }
             }
-        }        
+        }).start();
     }
+
+    // public void listenForMsgs() {
+        
+    //     String msgFromServer;
+    //     while (socket.isConnected()) {
+    //         try {
+    //             msgFromServer = bufferedReader.readLine();
+    //             System.out.println(msgFromServer);
+    //         } catch (IOException e) {
+    //             closeEverything(socket, bufferedReader, bufferedWriter);
+    //         }
+    //     }        
+    // }
 
 
     public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
@@ -108,6 +109,7 @@ public class TestClient {
 
     public static void main(String[] args) throws IOException {
         TestClient client = new TestClient();
+        System.out.println("id: " + client.uid);
 
         // they're on diff threads
         client.listenForMsgs();

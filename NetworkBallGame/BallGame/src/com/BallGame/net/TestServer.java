@@ -2,9 +2,10 @@ package com.BallGame.net;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestServer {
-    private ArrayList<Socket> csockets;
+    private static ArrayList<Socket> csockets;
 
     public TestServer() {
         try {
@@ -17,5 +18,15 @@ public class TestServer {
 
     public static void main(String[] args) {
         TestServer server = new TestServer();
+        List<Integer> pipe = new ArrayList();
+        Handler handler;
+        try {
+            handler = new Handler(server.csockets, pipe);
+            handler.startListen();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
     }
 }
