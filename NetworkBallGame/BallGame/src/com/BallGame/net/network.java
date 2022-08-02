@@ -1,13 +1,14 @@
 package com.BallGame.net;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ExecutorService;
 import java.util.ArrayList;
 
 public class network {
-    public static final int MAX_CLIENTS = 3; //Should not exceed 3. See encoding scheme.
+    public static final int MAX_CLIENTS = 4; //Should not exceed 4. See encoding scheme.
 
     /**  
      * Encapsulement for return values of connectAsClient as a tuple of [Socket, Int].
@@ -56,7 +57,7 @@ public class network {
         for(int i = 0; i < MAX_CLIENTS; i++){
             if(SLT.get(i).isDone()){ //if connection acq'd, prep socket for return
                 csockets.add(SLT.get(i).get());
-                csockets.get(i).getOutputStream().write(i); //indicate uid to client
+                csockets.get(csockets.size() - 1).getOutputStream().write(i); //indicate uid to client
             }
             else //cancel thread
                 listeners[i].stop();
@@ -135,5 +136,14 @@ public class network {
         info[3] = (info_en & 0x00FFF000) >>> 12;
         info[4] = (info_en & 0x00000FFF);
         return info;
+    }
+
+    public static byte[] intToByteArr(int n){
+        return ByteBuffer.allocate(4).putInt(n).array();
+    }
+    
+    public static int byteArrToInt(byte[] bs){
+        return ByteBuffer.wrap(bs).getInt();
+        // return ((bs[0] & 0xFF) << 0) | ((bs[1] & 0xFF) << 8) | ((bs[2] & 0xFF) << 16) | ((bs[3] & 0xFF) << 24);
     }
 }
