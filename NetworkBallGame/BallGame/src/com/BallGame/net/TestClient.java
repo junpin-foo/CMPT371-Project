@@ -39,15 +39,6 @@ public class TestClient {
             bufferedWriter.write("hi");
             bufferedWriter.newLine();
             bufferedWriter.flush();
-
-            // keep sending msgs
-            Scanner scanner = new Scanner(System.in);
-            while (socket.isConnected()) {
-                String msgToSend = scanner.nextLine();
-                bufferedWriter.write(msgToSend);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
-            }
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
@@ -113,6 +104,7 @@ public class TestClient {
 
         // they're on diff threads
         client.listenForMsgs();
+        client.sendMsg();
     }
 }
     

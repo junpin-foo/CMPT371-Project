@@ -25,6 +25,14 @@ public class Handler{
         for(int i = 0; i < cSockets.size(); i++){
             listeners[i] = new ISListen(cSockets.get(i), pipe);
         }
+        while (true) {
+            if (!pipe.isEmpty()) {
+                int tmp = pipe.get(0);
+                System.out.println(tmp);
+                pipe.remove(0);
+            }
+        }
+        
     }
 
     /**

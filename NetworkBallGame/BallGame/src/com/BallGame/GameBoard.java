@@ -30,8 +30,12 @@ import java.awt.Robot;
 import java.awt.AWTException;
 
 public class GameBoard extends JPanel implements MouseInputListener {
+    Team teamRed;
+    Team teamBlue;
+
     Player dummyPlayer;
     ArrayList<Player> playerList = new ArrayList<>();
+    ArrayList<Team> teamList = new ArrayList<>();
     long catchTime = 0;
     long releaseTime = 0;
     JLabel catchLabel; // pops up when a player grabs the ball
@@ -53,13 +57,19 @@ public class GameBoard extends JPanel implements MouseInputListener {
 
     public GameBoard() {
         this.dummyPlayer = new Player("Dummy Player", Color.RED);
-        Player janice = new Player("Janice", Color.BLUE);
-        Player arthur = new Player("Arthur", Color.GREEN);
+        Player janice = new Player("Janice", Color.RED);
+        Player arthur = new Player("Arthur", Color.BLUE);
         janice.score = 1540;
         arthur.score = 250;
         playerList.add(dummyPlayer);
         playerList.add(janice);
         playerList.add(arthur);
+
+        teamRed = new Team("RED", Color.RED);
+        teamBlue = new Team("BLUE", Color.BLUE);
+        teamList.add(teamRed);
+        teamList.add(teamBlue);
+
         catchLabel = new JLabel();
         catchLabel.setForeground(Color.white);
         add(catchLabel);
@@ -184,7 +194,12 @@ public class GameBoard extends JPanel implements MouseInputListener {
         releaseTime = System.currentTimeMillis() / 1000;
 
         // update player score
-        dummyPlayer.score += (releaseTime - catchTime);
+        // dummyPlayer.score += (releaseTime - catchTime);
+        if (dummyPlayer.teamname == Color.RED) {
+            teamRed.score += (releaseTime - catchTime);]
+        } else {
+            teamBlue += (releaseTime - catchTime);
+        }
 
         // update leaderboard
         sortPlayers();

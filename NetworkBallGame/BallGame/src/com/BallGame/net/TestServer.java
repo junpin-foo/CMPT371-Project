@@ -23,6 +23,11 @@ public class TestServer {
         try {
             handler = new Handler(server.csockets, pipe);
             handler.startListen();
+            // if (!handler.pipe.isEmpty) {
+            //     int tmp = pipe.get(0);
+            //     System.out.println(tmp);
+            //     pipe.remove(0);
+            // }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
