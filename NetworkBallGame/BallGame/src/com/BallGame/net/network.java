@@ -146,8 +146,4 @@ public class network {
         return ByteBuffer.wrap(bs).getInt();
         // return ((bs[0] & 0xFF) << 0) | ((bs[1] & 0xFF) << 8) | ((bs[2] & 0xFF) << 16) | ((bs[3] & 0xFF) << 24);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 6e1d4195571293dafa223440998aa76f6a05cc69

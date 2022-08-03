@@ -148,7 +148,7 @@ public class GameBoard extends JPanel implements MouseInputListener {
         scorePanel.setBackground(Color.black);
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
 
-        sortPlayers();
+        sortTeams();
         renderScores();
         leaderboardPanel.add(scorePanel);
 
@@ -163,25 +163,47 @@ public class GameBoard extends JPanel implements MouseInputListener {
 
     public void renderScores() {
         scorePanel.removeAll();
-        for (Player player : playerList) {
-            JLabel scoreLabel = new JLabel(player.username + ": " + player.score);
+        // for (Player player : playerList) {
+        //     JLabel scoreLabel = new JLabel(player.username + ": " + player.score);
+        //     scoreLabel.setForeground(Color.white);
+        //     scorePanel.add(scoreLabel);
+        // }
+
+        for (Team team : teamList) {
+            JLabel scoreLabel = new JLabel(team.name + ": " + team.score);
             scoreLabel.setForeground(Color.white);
             scorePanel.add(scoreLabel);
         }
+
 
         Dimension size = leaderboardPanel.getPreferredSize();
         leaderboardPanel.setBounds(1250, 50, size.width, size.height);
 
     }
 
-    public void sortPlayers() {
+    // public void sortPlayers() {
+    //     // sort scores from highest to lowest
+    //     Collections.sort(playerList, new Comparator<Player>() {
+    //         @Override
+    //         public int compare(Player p1, Player p2) {
+    //             if (p1.score == p2.score)
+    //                 return 0;
+    //             else if (p1.score > p2.score)
+    //                 return -1;
+    //             else
+    //                 return 1;
+    //         }
+    //     });
+    // }
+
+    public void sortTeams() {
         // sort scores from highest to lowest
-        Collections.sort(playerList, new Comparator<Player>() {
+        Collections.sort(teamList, new Comparator<Team>() {
             @Override
-            public int compare(Player p1, Player p2) {
-                if (p1.score == p2.score)
+            public int compare(Team t1, Team t2) {
+                if (t1.score == t2.score)
                     return 0;
-                else if (p1.score > p2.score)
+                else if (t1.score > t2.score)
                     return -1;
                 else
                     return 1;
@@ -196,13 +218,13 @@ public class GameBoard extends JPanel implements MouseInputListener {
         // update player score
         // dummyPlayer.score += (releaseTime - catchTime);
         if (dummyPlayer.teamname == Color.RED) {
-            teamRed.score += (releaseTime - catchTime);]
+            teamRed.score += (releaseTime - catchTime);
         } else {
-            teamBlue += (releaseTime - catchTime);
+            teamBlue.score += (releaseTime - catchTime);
         }
 
         // update leaderboard
-        sortPlayers();
+        sortTeams();
         renderScores();
     }
 
