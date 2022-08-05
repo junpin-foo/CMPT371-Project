@@ -57,10 +57,9 @@ public class GameBoardClient extends JPanel implements MouseInputListener {
     boolean holdright = true; // it only change to false when the ball is holding by others
 
     public GameBoardClient() {
-        // TODO: change from dummy to player. set the color based on id
-        this.dummyPlayer = new Player("Dummy Player", Color.RED);
-        Player janice = new Player("Janice", Color.BLUE);
-        Player arthur = new Player("Arthur", Color.GREEN);
+        this.dummyPlayer = new Player(client.getUID());
+        Player janice = new Player(2);
+        Player arthur = new Player(3);
         janice.score = 1540;
         arthur.score = 250;
         playerList.add(dummyPlayer);
@@ -162,7 +161,7 @@ public class GameBoardClient extends JPanel implements MouseInputListener {
     public void renderScores() {
         scorePanel.removeAll();
         for (Player player : playerList) {
-            JLabel scoreLabel = new JLabel(player.username + ": " + player.score);
+            JLabel scoreLabel = new JLabel(player.teamname + ": " + player.score);
             scoreLabel.setForeground(Color.white);
             scorePanel.add(scoreLabel);
         }
@@ -201,7 +200,7 @@ public class GameBoardClient extends JPanel implements MouseInputListener {
 
     public void handleBallCatched() {
         catchTime = System.currentTimeMillis();
-        catchLabel.setText(dummyPlayer.username + " has grabbed the ball!");
+        catchLabel.setText(dummyPlayer.teamname + " has grabbed the ball!");
         Dimension size = catchLabel.getPreferredSize();
         catchLabel.setBounds(650, 100, size.width, size.height);
     }
@@ -239,7 +238,7 @@ public class GameBoardClient extends JPanel implements MouseInputListener {
             // send msg to server saying ball grabbed and get lock + which colour grabbed
             handleBallCatched();
             Draggingflag = true;
-            // ball.color = dummyPlayer.teamname;
+            // ball.color = dummyPlayer.teamcolor;
             ball.lockStart = System.currentTimeMillis();
             startTime = System.nanoTime();
             estimatedTime = startTime + 1000000 * 10000; // s * ns
