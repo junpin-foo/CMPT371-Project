@@ -1,110 +1,65 @@
 package com.BallGame.net;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.Scanner;
+import java.io.OutputStream;
+import java.io.InputStream;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.BallGame.net.network.ClientResponse;
 
-public class TestClient {
-    private Socket socket;
+public class TestClient extends Thread {
+    public Socket socket;
     private int uid;
+    private List<Socket> cSockets;
     // private ClientResponse clientResponse;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+    private OutputStream OutputStream;
+    private InputStream InputStream;
+
+    public int getUID() {
+        return this.uid;
+    }
 
     public TestClient() {
         try {
-            ClientResponse clientResponse = network.connectAsClient("localhost", 1234);
+            ClientResponse clientResponse = network.connectAsClient("localhost", 3000);
+            cSockets = new ArrayList<Socket>(1);
             System.out.println("connected");
+            this.cSockets.add(this.socket);
             this.socket = clientResponse.getSocket();
             this.uid = clientResponse.getUID();
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.OutputStream = socket.getOutputStream();
+            this.InputStream = socket.getInputStream();
             System.out.println("my id: " + this.uid);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         }
     }
+
     /**
      * send msgs to client handler
      */
-    public void sendMsg() {
+    public void sendMsg(int msg) throws Exception {
         try {
-            bufferedWriter.write("hi");
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            OutputStream.write(network.intToByteArr(msg));
         } catch (IOException e) {
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            OutputStream.close();
+            socket.close();
         }
     }
 
     /**
      * listen for msgs from server (broadcast msgs)
-     * need a new thread
      */
-    public void listenForMsgs() {
-        new Thread(new Runnable() { // see wittcode's vid on runnable
-            @Override
-            public void run() {
-                String msgFromServer;
-                while (socket.isConnected()) {
-                    try {
-                        msgFromServer = bufferedReader.readLine();
-                        System.out.println(msgFromServer);
-                    } catch (IOException e) {
-                        closeEverything(socket, bufferedReader, bufferedWriter);
-                    }
-                }
-            }
-        }).start();
+    public int[] listenForMsgs() throws Exception {
+        InputStream is = socket.getInputStream();
+        byte[] p = new byte[4];
+        is.read(p, 0, 4);
+        int[] message = network.decode(network.byteArrToInt(p));
+        return message;
     }
 
-    // public void listenForMsgs() {
-        
-    //     String msgFromServer;
-    //     while (socket.isConnected()) {
-    //         try {
-    //             msgFromServer = bufferedReader.readLine();
-    //             System.out.println(msgFromServer);
-    //         } catch (IOException e) {
-    //             closeEverything(socket, bufferedReader, bufferedWriter);
-    //         }
-    //     }        
-    // }
-
-
-    public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
-        try {
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
-            }
-            if (socket != null) {
-                socket.close();
-            }
-            if (socket != null) {
-                socket.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
-        TestClient client = new TestClient();
-        System.out.println("id: " + client.uid);
-
-        // they're on diff threads
-        client.listenForMsgs();
-        client.sendMsg();
-    }
 }
-    

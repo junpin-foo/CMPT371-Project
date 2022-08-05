@@ -44,7 +44,8 @@ public class ISListen implements Runnable {
                 byte[] p = new byte[4];
                 is.read(p, 0, 4);
                 synchronized (pipe) {
-                    pipe.add(network.byteArrToInt(p));
+                    pipe.add(byteArrToInt(p));
+
                 }
             } catch (SocketTimeoutException e) {
                 continue;
@@ -56,4 +57,13 @@ public class ISListen implements Runnable {
             }
         }
     }
+    public static byte[] intToByteArr(int n){
+        return ByteBuffer.allocate(4).putInt(n).array();
+    }
+    public static int byteArrToInt(byte[] bs){
+        return ByteBuffer.wrap(bs).getInt();
+        // return ((bs[0] & 0xFF) << 0) | ((bs[1] & 0xFF) << 8) | ((bs[2] & 0xFF) << 16) | ((bs[3] & 0xFF) << 24);
+
+    }
 }
+
